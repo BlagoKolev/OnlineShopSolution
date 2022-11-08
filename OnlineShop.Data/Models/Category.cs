@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace OnlineShop.Data.Models
 {
-    public class Cart
+    public class Category
     {
-        public Cart()
+        public Category()
         {
-            this.Items = new List<CartItem>();
+            this.Products = new List<Product>();
         }
         public int Id { get; set; }
-        public int UserId { get; set; }
-        public virtual ICollection<CartItem> Items { get; set; }
+        public string Name { get; set; }
+        public virtual ICollection<Product> Products{ get; set; }
     }
 }
