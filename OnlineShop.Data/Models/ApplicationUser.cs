@@ -9,6 +9,6 @@ namespace OnlineShop.Data.Models
     public  class ApplicationUser
     {
         public int Id { get; set; }
-        public string UserName { get; set; }
+        public string Username { get; set; }
     }
 }

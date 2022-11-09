@@ -13,10 +13,36 @@ namespace OnlineShop.Api.Infrastructure
             var services = serviceScope.ServiceProvider;
 
             MigrateDatabase(services);
+            SeedFakeUsers(services);
             SeedCategories(services);
             SeedProducts(services);
 
             return app;
+        }
+
+        private static void SeedFakeUsers(IServiceProvider services)
+        {
+            var db = GetDbContext(services);
+
+            if (db.Users.Any())
+            {
+                return;
+            }
+
+            using FileStream openStream = File.OpenRead("../OnlineShop.Data/Resources/Users.json");
+            var users = JsonSerializer
+                .DeserializeAsync<ApplicationUser[]>(openStream)
+                .GetAwaiter()
+                .GetResult();
+
+            db.Users
+                .AddRangeAsync(users)
+                .GetAwaiter()
+                .GetResult();
+
+            db.SaveChangesAsync()
+                .GetAwaiter()
+                .GetResult();
         }
         private static void SeedCategories(IServiceProvider services)
         {
@@ -28,10 +54,17 @@ namespace OnlineShop.Api.Infrastructure
             }
 
             using FileStream openStream = File.OpenRead("../OnlineShop.Data/Resources/Categories.json");
-            var categories = JsonSerializer.DeserializeAsync<Category[]>(openStream).GetAwaiter().GetResult(); 
+            var categories = JsonSerializer
+                .DeserializeAsync<Category[]>(openStream)
+                .GetAwaiter()
+                .GetResult();
 
-            db.Categories.AddRangeAsync(categories).GetAwaiter().GetResult();
-            db.SaveChangesAsync().GetAwaiter().GetResult();
+            db.Categories.AddRangeAsync(categories)
+                .GetAwaiter()
+                .GetResult();
+            db.SaveChangesAsync()
+                .GetAwaiter()
+                .GetResult();
         }
         private static void SeedProducts(IServiceProvider services)
         {
@@ -43,10 +76,18 @@ namespace OnlineShop.Api.Infrastructure
             }
 
             using FileStream openStream = File.OpenRead("../OnlineShop.Data/Resources/Products.json");
-            var products = JsonSerializer.DeserializeAsync<Product[]>(openStream).GetAwaiter().GetResult();
+            var products = JsonSerializer
+                .DeserializeAsync<Product[]>(openStream)
+                .GetAwaiter()
+                .GetResult();
 
-             db.Products.AddRangeAsync(products).GetAwaiter().GetResult();
-            db.SaveChangesAsync().GetAwaiter().GetResult();
+            db.Products.AddRangeAsync(products)
+                .GetAwaiter()
+                .GetResult();
+
+            db.SaveChangesAsync()
+                .GetAwaiter()
+                .GetResult();
         }
 
         private static void MigrateDatabase(IServiceProvider services)
