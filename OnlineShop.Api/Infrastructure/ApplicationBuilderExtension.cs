@@ -22,6 +22,11 @@ namespace OnlineShop.Api.Infrastructure
         {
             var db = GetDbContext(services);
 
+            if (db.Categories.Any())
+            {
+                return;
+            }
+
             using FileStream openStream = File.OpenRead("../OnlineShop.Data/Resources/Categories.json");
             var categories = JsonSerializer.DeserializeAsync<Category[]>(openStream).GetAwaiter().GetResult(); 
 
