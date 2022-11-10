@@ -30,20 +30,20 @@ namespace OnlineShop.Api.Services
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<Product>> GetProducts()
+        public async Task<IEnumerable<ProductDto>> GetProducts()
         {
             var products = await db.Products
-                //.Select(x=> new ProductDto
-                //{
-                //    Id = x.Id,
-                //    Name = x.Name,
-                //    Description = x.Description,
-                //        ImageUrl = x.ImageUrl,
-                //        Price = x.Price,
-                //        Quantity = x.Quantity,
-                //        CategoryId = x.CategoryId,
-                       
-                //})
+                .Select(x => new ProductDto
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Description = x.Description,
+                    ImageUrl = x.ImageUrl,
+                    Price = x.Price,
+                    Quantity = x.Quantity,
+                    CategoryId = x.CategoryId,
+                    CategoryName = x.Category.Name
+                })
                 .ToArrayAsync();
             return products;
         }

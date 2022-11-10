@@ -15,28 +15,28 @@ namespace OnlineShop.Api.Controllers
             this.productService = productService;
         }
 
-        //[HttpGet]
-        //public async Task<ActionResult<IEnumerable<ProductDto>>> Get()
-        //{
-        //    try
-        //    {
-        //        var products = await productService.GetProducts();
-        //        var productCategories = await productService.GetCategories();
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<ProductDto>>> Get()
+        {
+            try
+            {
+                var productsDto = await productService.GetProducts();
+               // var productCategories = await productService.GetCategories();
 
-        //        if (products == null || productCategories == null)
-        //        {
-        //            return NotFound();
-        //        }
-        //        else
-        //        {
-                     
-        //        }
-        //    }
-        //    catch (Exception)
-        //    {
+                if (productsDto == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    return Ok(productsDto);
+                }
+            }
+            catch (Exception)
+            {
 
-        //        throw;
-        //    }
-      //  }
+                return StatusCode(StatusCodes.Status500InternalServerError,"Error retrieving data drom database.");
+            }
+        }
     }
 }
