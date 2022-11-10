@@ -1,8 +1,8 @@
 ﻿using OnlineShop.Data.Models;
 
-namespace OnlineShop.Api.Repositories.Contracts
+namespace OnlineShop.Api.Services.Contracts
 {
-    public interface IProductRepository
+    public interface IProductService
     {
         Task<IEnumerable<Product>> GetProducts();
         Task<Product> GetProductById(int id);

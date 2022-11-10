@@ -1,15 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using OnlineShop.Api.Repositories.Contracts;
+using OnlineShop.Api.Services.Contracts;
 using OnlineShop.Data.Context;
 using OnlineShop.Data.Models;
+using OnlineShop.Models.Dtos;
 
-namespace OnlineShop.Api.Repositories
+namespace OnlineShop.Api.Services
 {
-    public class ProductRepository : IProductRepository
+    public class ProductService : IProductService
     {
         private readonly OnlineShopDbContext db;
 
-        public ProductRepository(OnlineShopDbContext db)
+        public ProductService(OnlineShopDbContext db)
         {
             this.db = db;
         }
@@ -31,7 +32,19 @@ namespace OnlineShop.Api.Repositories
 
         public async Task<IEnumerable<Product>> GetProducts()
         {
-            var products = await db.Products.ToArrayAsync();
+            var products = await db.Products
+                //.Select(x=> new ProductDto
+                //{
+                //    Id = x.Id,
+                //    Name = x.Name,
+                //    Description = x.Description,
+                //        ImageUrl = x.ImageUrl,
+                //        Price = x.Price,
+                //        Quantity = x.Quantity,
+                //        CategoryId = x.CategoryId,
+                       
+                //})
+                .ToArrayAsync();
             return products;
         }
     }

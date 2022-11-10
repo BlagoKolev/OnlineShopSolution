@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using OnlineShop.Data.Context;
 using OnlineShop.Api.Infrastructure;
+using OnlineShop.Api.Services.Contracts;
+using OnlineShop.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 var defaultConnection = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<OnlineShopDbContext>(options =>
 options.UseSqlServer(defaultConnection));
+
+builder.Services.AddScoped<IProductService, ProductService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
