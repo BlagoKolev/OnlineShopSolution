@@ -11,17 +11,11 @@ else
     var productCount = Products.Count();
     if (productCount > 0)
     {
-
-        var groupedProductsByCategory = from product in Products
-                                        group product by product.CategoryId into categoryGroup
-                                        orderby categoryGroup.Key
-                                        select categoryGroup;
-
-        foreach (var category in groupedProductsByCategory)
+        foreach (var productGroup in GetGroupedProductsByCategory())
         {
-            <h4>@category.FirstOrDefault(x=>x.CategoryId == @category.Key).CategoryName</h4>
+            <h4>@GetCategoryName(productGroup)</h4>
             <div class="row mt-3">
-                <DisplayProducts Products="@category"></DisplayProducts>
+                <DisplayProducts Products="@productGroup.Take(4)"></DisplayProducts>
             </div>
             <hr class="mb-3" />
         }
