@@ -3,6 +3,7 @@ using OnlineShop.Data.Context;
 using OnlineShop.Api.Infrastructure;
 using OnlineShop.Api.Services.Contracts;
 using OnlineShop.Api.Services;
+using Microsoft.Net.Http.Headers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,10 +25,14 @@ await app.PrepareDatabase();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
-{
+{ 
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors(policy => policy.WithOrigins("http://localhost:7182", "https://localhost:7182")
+.AllowAnyMethod()
+.WithHeaders(HeaderNames.ContentType));
 
 app.UseHttpsRedirection();
 

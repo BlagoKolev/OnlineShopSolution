@@ -2,7 +2,7 @@
   {
     "Name": "Glossier - Beauty Kit",
     "Description": "A kit provided by Glossier, containing skin care, hair care and makeup products",
-    "ImageUrl": "../OnlineShop.Web/wwwroot/Images/Beauty/Beauty1.png",
+    "ImageUrl": "/Images/Beauty/Beauty1.png",
     "Price": 100,
     "Quantity": 100,
     "CategoryId": 1
@@ -164,7 +164,7 @@
   {
     "Name": "Colorful Trainers",
     "Description": "Colorful trainsers - available in most sizes",
-    "ImageUrl": "//Images/Shoes/Shoes2.png",
+    "ImageUrl": "/Images/Shoes/Shoes2.png",
     "Price": 150,
     "Quantity": 60,
     "CategoryId": 4
