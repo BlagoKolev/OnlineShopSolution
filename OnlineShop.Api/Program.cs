@@ -13,6 +13,7 @@ builder.Services.AddDbContext<OnlineShopDbContext>(options =>
 options.UseSqlServer(defaultConnection));
 
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IShopingCartService, ShopingCartService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
