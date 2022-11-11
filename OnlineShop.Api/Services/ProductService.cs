@@ -25,9 +25,23 @@ namespace OnlineShop.Api.Services
             throw new NotImplementedException();
         }
 
-        public Task<Product> GetProductById(int id)
+        public async Task<ProductDto> GetProductById(int id)
         {
-            throw new NotImplementedException();
+            var product = await db.Products
+                .Where(x => x.Id == id)
+                .Select(x => new ProductDto
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Description = x.Description,
+                    Quantity = x.Quantity,
+                    CategoryId = x.CategoryId,
+                    CategoryName = x.Category.Name,
+                    ImageUrl = x.ImageUrl,
+                    Price = x.Price
+                })
+                .FirstOrDefaultAsync();
+            return product;
         }
 
         public async Task<IEnumerable<ProductDto>> GetProducts()

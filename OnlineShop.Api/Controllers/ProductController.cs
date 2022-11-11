@@ -21,7 +21,7 @@ namespace OnlineShop.Api.Controllers
             try
             {
                 var productsDto = await productService.GetProducts();
-               // var productCategories = await productService.GetCategories();
+                // var productCategories = await productService.GetCategories();
 
                 if (productsDto == null)
                 {
@@ -34,8 +34,27 @@ namespace OnlineShop.Api.Controllers
             }
             catch (Exception)
             {
-
-                return StatusCode(StatusCodes.Status500InternalServerError,"Error retrieving data drom database.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error retrieving data drom database.");
+            }
+        }
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<ProductDto>> GetById(int id)
+        {
+            try
+            {
+                var productDto = await productService.GetProductById(id);
+                if (productDto == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    return Ok(productDto);
+                }
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error retrieving data drom database.");
             }
         }
     }
