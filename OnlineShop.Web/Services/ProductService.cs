@@ -4,11 +4,11 @@ using System.Net.Http.Json;
 
 namespace OnlineShop.Web.Services
 {
-    public class ClientProductService : IClientProductService
+    public class ProductService : IProductService
     {
         private readonly HttpClient httpClient;
 
-        public ClientProductService(HttpClient httpClient)
+        public ProductService(HttpClient httpClient)
         {
             this.httpClient = httpClient;
         }

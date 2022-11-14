@@ -5,7 +5,7 @@
 @if (Product == null && ErrorMessage == null)
 {
     <h3>Loading details...</h3>
-   <DisplaySpinner></DisplaySpinner>
+    <DisplaySpinner></DisplaySpinner>
 }
 else if (ErrorMessage != null)
 {
@@ -24,7 +24,16 @@ else
             <p class="mb-4">
                 <b>@Product.Price.ToString("C")&nbsp; (@Product.Quantity items in stock)</b>
             </p>
-             
+            <div>
+                <button class="btn btn-success" @onclick="() => AddtoCartClick((new CartItemToAddDto{
+                    CartId = HardCoded.CartId,
+                    ProductId = Product.Id,
+                    Quantity = 1
+                    }))">
+                    <b>Add to Cart</b>
+                </button>
+            </div>
+
         </div>
     </div>
 }

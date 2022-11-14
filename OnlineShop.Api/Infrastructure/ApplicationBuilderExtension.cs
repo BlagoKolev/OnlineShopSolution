@@ -16,10 +16,29 @@ namespace OnlineShop.Api.Infrastructure
             SeedFakeUsers(services);
             SeedCategories(services);
             SeedProducts(services);
+            SeedFakeCarts(services);
 
             return app;
         }
 
+        private static void SeedFakeCarts(IServiceProvider services)
+        {
+            var db = GetDbContext(services);
+            if (db.Carts.Any())
+            {
+                return;
+            }
+            using var openStream = File.OpenRead("../OnlineShop.Data/Resources/Carts.json");
+
+            var carts = JsonSerializer
+                .DeserializeAsync<Cart[]>(openStream)
+                .GetAwaiter()
+                .GetResult();
+            db.Carts.AddRangeAsync(carts);
+            db.SaveChangesAsync()
+                .GetAwaiter()
+                .GetResult();
+        }
         private static void SeedFakeUsers(IServiceProvider services)
         {
             var db = GetDbContext(services);
