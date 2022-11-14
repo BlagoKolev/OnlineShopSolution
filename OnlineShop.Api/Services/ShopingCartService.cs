@@ -19,7 +19,7 @@ namespace OnlineShop.Api.Services
         {
             return await db.CartItems.AnyAsync(x => x.CartId == cartId && x.ProductId == productId);
         }
-        public async Task<CartItem> AddProduct(CartItemToAddDto cartItemToAddDto)
+        public async Task<CartItemDto> AddProduct(CartItemToAddDto cartItemToAddDto)
         {
             if (await CartItemExists(cartItemToAddDto.CartId, cartItemToAddDto.ProductId) == false)
             {
@@ -29,15 +29,34 @@ namespace OnlineShop.Api.Services
                {
                    CartId = cartItemToAddDto.CartId,
                    ProductId = x.Id,
-                   Quantity = cartItemToAddDto.Quantity
+                   Quantity = cartItemToAddDto.Quantity,
                })
                .FirstOrDefaultAsync();
+
+                var realProduct = db.Products
+                    .Where(x => x.Id == productToAdd.ProductId)
+                    .FirstOrDefault();
+
+                productToAdd.Product = realProduct;
 
                 if (productToAdd != null)
                 {
                     var result = await db.CartItems.AddAsync(productToAdd);
                     await db.SaveChangesAsync();
-                    return result.Entity;
+                    var itemToReturn = new CartItemDto
+                    {
+                        Id = productToAdd.Id,
+                        CartId = productToAdd.CartId,
+                        Price = productToAdd.Product.Price,
+                        ProductDescription = productToAdd.Product.Description,
+                        ProductId = productToAdd.ProductId,
+                        ProductImageUrl = productToAdd.Product.ImageUrl,
+                        ProductName = productToAdd.Product.Name,
+                        Quantity = productToAdd.Quantity,
+                        TotalPrice = productToAdd.Quantity * productToAdd.Product.Price
+                    };
+                    //return result.Entity;
+                    return itemToReturn;
                 }
             }
 

@@ -5,7 +5,7 @@ namespace OnlineShop.Api.Services.Contracts
 {
     public interface IShopingCartService
     {
-        Task<CartItem> AddProduct(CartItemToAddDto cartItemToAddDto);
+        Task<CartItemDto> AddProduct(CartItemToAddDto cartItemToAddDto);
         Task<CartItem> UpdateQuantity(int id, CartItemUpdateQuantityDto cartItemToAddDto);
         Task<CartItem> RemoveFromShopingCart(int id);
         Task<CartItemDto> GetProductInCart(int productId, int cartId);
