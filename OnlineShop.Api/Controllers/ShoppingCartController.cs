@@ -19,7 +19,7 @@ namespace OnlineShop.Api.Controllers
         }
 
         [HttpGet]
-        [Route("{userId}/GetItems")]
+        [Route("{userId}/GetProducts")]
         public async Task<ActionResult<IEnumerable<CartItemDto>>> GetProducts(int userId)
         {
             try

@@ -42,7 +42,8 @@ namespace OnlineShop.Web.Services
         {
             try
             {
-                var response = await httpClient.GetAsync($"api/{userId}/GetItems");
+                var response = await httpClient.GetAsync($"api/ShoppingCart/{userId}/GetProducts");
+
                 if (response.IsSuccessStatusCode)
                 {
                     if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
