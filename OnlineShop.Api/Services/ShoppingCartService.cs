@@ -6,11 +6,11 @@ using OnlineShop.Models.Dtos;
 
 namespace OnlineShop.Api.Services
 {
-    public class ShopingCartService : IShopingCartService
+    public class ShoppingCartService : IShoppingCartService
     {
         private readonly OnlineShopDbContext db;
 
-        public ShopingCartService(OnlineShopDbContext db)
+        public ShoppingCartService(OnlineShopDbContext db)
         {
             this.db = db;
         }
@@ -59,7 +59,6 @@ namespace OnlineShop.Api.Services
                     return itemToReturn;
                 }
             }
-
             return null;
         }
 
@@ -98,34 +97,71 @@ namespace OnlineShop.Api.Services
                      ProductId = x.ProductId,
                      Quantity = x.Quantity,
                      CartId = x.CartId,
-
                  })
                  .FirstOrDefault())
                  .FirstOrDefaultAsync();
 
-            var cartItemDto = new CartItemDto
-            {
-                Id = product.Id,
-                ProductName = product.Product.Name,
-                ProductDescription = product.Product.Description,
-                ProductImageUrl = product.Product.ImageUrl,
-                ProductId = product.ProductId,
-                Price = product.Product.Price,
-                Quantity = product.Quantity,
-                TotalPrice = product.Product.Price * product.Quantity,
-                CartId = product.CartId,
-            };
+            //var cartItemDto = new CartItemDto
+            //{
+            //    Id = product.Id,
+            //    ProductName = product.Product.Name,
+            //    ProductDescription = product.Product.Description,
+            //    ProductImageUrl = product.Product.ImageUrl,
+            //    ProductId = product.ProductId,
+            //    Price = product.Product.Price,
+            //    Quantity = product.Quantity,
+            //    TotalPrice = product.Product.Price * product.Quantity,
+            //    CartId = product.CartId,
+            //};
+            var cartItemDto = ConvertToDto(product);
+
             return cartItemDto;
         }
 
-        public Task<CartItem> RemoveFromShopingCart(int id)
+        public async Task<CartItemDto> RemoveFromShopingCart(int id)
         {
-            throw new NotImplementedException();
+            var itemToRemove = await db.CartItems
+                .Where(x => x.Id == id)
+                .FirstOrDefaultAsync();
+
+            var product = db.Products
+                .Where(x => x.Id == itemToRemove.ProductId)
+                .FirstOrDefault();
+
+            itemToRemove.Product = product;
+
+            if (itemToRemove == null)
+            {
+                return null;
+            }
+
+            db.CartItems.Remove(itemToRemove);
+            await db.SaveChangesAsync();
+
+            var itemtoRemoveDto = ConvertToDto(itemToRemove);
+            return itemtoRemoveDto;
         }
 
         public Task<CartItem> UpdateQuantity(int id, CartItemUpdateQuantityDto cartItemToAddDto)
         {
             throw new NotImplementedException();
+        }
+
+        private static CartItemDto ConvertToDto(CartItem cartItem)
+        {
+            var cartItemDto = new CartItemDto
+            {
+                Id = cartItem.Id,
+                ProductName = cartItem.Product.Name,
+                ProductDescription = cartItem.Product.Description,
+                ProductImageUrl = cartItem.Product.ImageUrl,
+                ProductId = cartItem.ProductId,
+                Price = cartItem.Product.Price,
+                Quantity = cartItem.Quantity,
+                TotalPrice = cartItem.Product.Price * cartItem.Quantity,
+                CartId = cartItem.CartId,
+            };
+            return cartItemDto;
         }
     }
 }

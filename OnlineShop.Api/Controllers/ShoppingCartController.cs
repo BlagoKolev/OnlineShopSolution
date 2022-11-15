@@ -9,13 +9,13 @@ namespace OnlineShop.Api.Controllers
     public class ShoppingCartController : ControllerBase
     {
         private readonly IProductService productService;
-        private readonly IShopingCartService shopingCartService;
+        private readonly IShoppingCartService shoppingCartService;
 
         public ShoppingCartController(IProductService productService,
-            IShopingCartService shopingCartService)
+            IShoppingCartService shoppingCartService)
         {
             this.productService = productService;
-            this.shopingCartService = shopingCartService;
+            this.shoppingCartService = shoppingCartService;
         }
 
         [HttpGet]
@@ -24,7 +24,7 @@ namespace OnlineShop.Api.Controllers
         {
             try
             {
-                var productsInCart = await shopingCartService.GetAllProductsInCart(userId);
+                var productsInCart = await shoppingCartService.GetAllProductsInCart(userId);
                 if (productsInCart == null)
                 {
                     return NoContent();
@@ -49,7 +49,7 @@ namespace OnlineShop.Api.Controllers
         {
             try
             {
-                var currentProduct = await shopingCartService.GetProductInCart(productId, cartId);
+                var currentProduct = await shoppingCartService.GetProductInCart(productId, cartId);
                 var product = await productService.GetProductById(productId);
                 if (currentProduct == null || product == null)
                 {
@@ -69,7 +69,7 @@ namespace OnlineShop.Api.Controllers
         {
             try
             {
-                var newCartItem = await shopingCartService.AddProduct(itemToAdd);
+                var newCartItem = await shoppingCartService.AddProduct(itemToAdd);
 
                 if (newCartItem == null)
                 {
@@ -81,11 +81,39 @@ namespace OnlineShop.Api.Controllers
                 {
                     throw new Exception($"Item does not exist in database.(product id: {itemToAdd.ProductId})");
                 }
-                return CreatedAtAction(nameof(GetCartProductById), new {id=newCartItem.Id}, newCartItem);
+                return CreatedAtAction(nameof(GetCartProductById), new { id = newCartItem.Id }, newCartItem);
             }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult<CartItemDto>> DeleteItem(int id)
+        {
+            try
+            {
+                var itemToDelete = await shoppingCartService.RemoveFromShopingCart(id);
+
+                if (itemToDelete == null)
+                {
+                    return NotFound();
+                }
+
+                var product = productService.GetProductById(itemToDelete.ProductId);
+
+                if (product == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(itemToDelete);
+
+            }
+            catch (Exception ex)
+            {
+                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
     }
