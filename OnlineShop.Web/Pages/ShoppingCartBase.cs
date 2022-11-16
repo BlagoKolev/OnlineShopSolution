@@ -10,11 +10,14 @@ namespace OnlineShop.Web.Pages
         public IShoppingCartService ShoppingCartService { get; set; }
         public List<CartItemDto> ShoppingCartItems { get; set; }
         public string? ErrorMessage { get; set; }
+        protected string TotalPrice { get; set; }
+        protected int TotalQuantity { get; set; }
         protected override async Task OnInitializedAsync()
         {
             try
             {
                  ShoppingCartItems = await this.ShoppingCartService.GetItems(HardCoded.UserId);
+                CalculateCartSummaryTotals();
             }
             catch (Exception ex)
             {
@@ -26,6 +29,7 @@ namespace OnlineShop.Web.Pages
         {
             var cartItemDto = await this.ShoppingCartService.DeleteItem(id);
             RemoveCartItem(id);
+            CalculateCartSummaryTotals();
         }
         private CartItemDto GetCartItem(int id)
         {
@@ -50,6 +54,10 @@ namespace OnlineShop.Web.Pages
                         Quantity = quantity
                     };
                    var returnedUpdateItemDto = await ShoppingCartService.UpdateItemQuantity(updateItemDto);
+
+                    UpdateItemTotalPrice(returnedUpdateItemDto);
+
+                    CalculateCartSummaryTotals();
                 }
                 else
                 {
@@ -66,6 +74,28 @@ namespace OnlineShop.Web.Pages
             {
 
                 throw;
+            }
+        }
+
+        private void SetTotalPrice()
+        {
+            TotalPrice = this.ShoppingCartItems.Sum(x => x.TotalPrice).ToString("C");
+        }
+        private void SetTotalQuantity()
+        {
+            TotalQuantity = this.ShoppingCartItems.Sum(x => x.Quantity);    
+        }
+        private void CalculateCartSummaryTotals()
+        {
+            SetTotalPrice();
+            SetTotalQuantity();
+        }
+        private void UpdateItemTotalPrice(CartItemDto cartItemDto)
+        {
+            var item = GetCartItem(cartItemDto.Id);
+            if (item!=null)
+            {
+                item.TotalPrice = item.Quantity * item.Price;
             }
         }
     }

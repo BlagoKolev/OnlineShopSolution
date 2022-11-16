@@ -146,27 +146,17 @@ namespace OnlineShop.Api.Services
         {
             var itemToUpdate = await db.CartItems
                  .Where(x => x.Id == id)
-                 //.Select(x=> new CartItem
-                 //{
-                 //    Id = x.Id,
-                 //    ProductId = x.ProductId,
-                 //    Product = x.Product,
-                 //    CartId = x.CartId,
-                 //    Quantity = x.Quantity
-                 //})
                  .FirstOrDefaultAsync();
-
-            var product = db.Products
-               .Where(x => x.Id == itemToUpdate.ProductId)
-               .FirstOrDefault();
-
-            itemToUpdate.Product = product;
-
 
             if (itemToUpdate != null)
             {
+                var product = db.Products
+                    .Where(x => x.Id == itemToUpdate.ProductId)
+                    .FirstOrDefault();
+
+                itemToUpdate.Product = product;
                 itemToUpdate.Quantity = cartItemUpdateQuantityDto.Quantity;
-               var res = await db.SaveChangesAsync();
+                await db.SaveChangesAsync();
                 var itemToReturn = ConvertToDto(itemToUpdate);
                 return itemToReturn;
             }
