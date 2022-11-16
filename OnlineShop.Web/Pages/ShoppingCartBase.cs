@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using OnlineShop.Models.Dtos;
 using OnlineShop.Web.Services.Contracts;
 
@@ -6,6 +7,8 @@ namespace OnlineShop.Web.Pages
 {
     public class ShoppingCartBase : ComponentBase
     {
+        [Inject]
+        public IJSRuntime _IJSInteroop { get; set; }
         [Inject]
         public IShoppingCartService ShoppingCartService { get; set; }
         public List<CartItemDto> ShoppingCartItems { get; set; }
@@ -58,6 +61,8 @@ namespace OnlineShop.Web.Pages
                     UpdateItemTotalPrice(returnedUpdateItemDto);
 
                     CalculateCartSummaryTotals();
+
+                    ToggleUpdateQuantityButton(returnedUpdateItemDto.Id, false);
                 }
                 else
                 {
@@ -75,6 +80,15 @@ namespace OnlineShop.Web.Pages
 
                 throw;
             }
+        }
+
+        protected async Task UpdateQuantityOnInput(int id)
+        {
+            await ToggleUpdateQuantityButton(id, true);
+        }
+        private async Task ToggleUpdateQuantityButton(int id, bool visible)
+        {
+            await _IJSInteroop.InvokeVoidAsync("ToggleUpdateQuantityButton", id, visible);
         }
 
         private void SetTotalPrice()

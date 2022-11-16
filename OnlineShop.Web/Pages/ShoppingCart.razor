@@ -27,14 +27,19 @@ else
                             <div class="mb-4">@item.ProductDescription</div>
                             <span>
                                 Price: <b>@item.Price.ToString("C")</b>
-                                <input type="number" @bind="@item.Quantity"/>
-                                <button class="btn btn-info btn-sm" @onclick="(()=>UpdateQuantityClick(item.Id, item.Quantity))">Update quantity</button>
+                                <input @oninput="(() => UpdateQuantityOnInput(item.Id))"
+                                    type="number" @bind="@item.Quantity" />
+                                <button id="@item.Id"
+                                        class="btn btn-info btn-sm update-quantity"
+                                        @onclick="(()=>UpdateQuantityClick(item.Id, item.Quantity))">
+                                    Update quantity
+                                </button>
                             </span>
 
                             <div class="btn btn-danger sm" @onclick="(()=> DeleteItemFromCartClick(item.Id))">
                                 <i class="fa fa-trash" aria-hidden="true"></i>
                             </div>
-                            <div>@item.TotalPrice.ToString("C")</div>
+                            <div>Total price: <b>@item.TotalPrice.ToString("C")</b></div>
                         </div>
                     </div>
                 }
