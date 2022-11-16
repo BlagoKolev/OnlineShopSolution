@@ -14,7 +14,7 @@ namespace OnlineShop.Web.Pages
         {
             try
             {
-                 ShoppingCartItems = await ShoppingCartService.GetItems(HardCoded.UserId);
+                 ShoppingCartItems = await this.ShoppingCartService.GetItems(HardCoded.UserId);
             }
             catch (Exception ex)
             {
@@ -24,18 +24,49 @@ namespace OnlineShop.Web.Pages
 
         protected async Task DeleteItemFromCartClick(int id)     
         {
-            var cartItemDto = await ShoppingCartService.DeleteItem(id);
+            var cartItemDto = await this.ShoppingCartService.DeleteItem(id);
             RemoveCartItem(id);
         }
         private CartItemDto GetCartItem(int id)
         {
-           return ShoppingCartItems.FirstOrDefault(x => x.Id == id);
+           return this.ShoppingCartItems.FirstOrDefault(x => x.Id == id);
         }
 
         private void RemoveCartItem(int id)
         {
             var itemToRemove = GetCartItem(id);
             ShoppingCartItems.Remove(itemToRemove);
+        }
+
+        protected async Task UpdateQuantityClick(int id, int quantity)
+        {
+            try
+            {
+                if (quantity > 0)
+                {
+                    var updateItemDto = new CartItemUpdateQuantityDto
+                    {
+                        CartItemId = id,
+                        Quantity = quantity
+                    };
+                   var returnedUpdateItemDto = await ShoppingCartService.UpdateItemQuantity(updateItemDto);
+                }
+                else
+                {
+                    var item = this.ShoppingCartItems.FirstOrDefault(x=>x.Id == id);
+
+                    if (item != null)
+                    {
+                        item.Quantity = 1;
+                        item.TotalPrice = item.Price;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
     }
 }

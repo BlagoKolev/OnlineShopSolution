@@ -144,21 +144,29 @@ namespace OnlineShop.Api.Services
 
         public async Task<CartItemDto> UpdateQuantity(int id, CartItemUpdateQuantityDto cartItemUpdateQuantityDto)
         {
-            var itemToUpdate = db.CartItems
+            var itemToUpdate = await db.CartItems
                  .Where(x => x.Id == id)
-                 .Select(x=> new CartItem
-                 {
-                     Id = x.Id,
-                     ProductId = x.ProductId,
-                     Product = x.Product,
-                     CartId = x.CartId,
-                     Quantity = x.Quantity
-                 })
-                 .FirstOrDefault();
+                 //.Select(x=> new CartItem
+                 //{
+                 //    Id = x.Id,
+                 //    ProductId = x.ProductId,
+                 //    Product = x.Product,
+                 //    CartId = x.CartId,
+                 //    Quantity = x.Quantity
+                 //})
+                 .FirstOrDefaultAsync();
+
+            var product = db.Products
+               .Where(x => x.Id == itemToUpdate.ProductId)
+               .FirstOrDefault();
+
+            itemToUpdate.Product = product;
+
+
             if (itemToUpdate != null)
             {
                 itemToUpdate.Quantity = cartItemUpdateQuantityDto.Quantity;
-                await db.SaveChangesAsync();
+               var res = await db.SaveChangesAsync();
                 var itemToReturn = ConvertToDto(itemToUpdate);
                 return itemToReturn;
             }

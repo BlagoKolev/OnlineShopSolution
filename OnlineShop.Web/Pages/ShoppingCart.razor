@@ -15,35 +15,40 @@ else
     @if (ShoppingCartItems.Count > 0)
     {
         <div class="row mb-5">
-        <div class="col-md-9">
-            @foreach (var item in ShoppingCartItems)
-            {
-                <div class="row mb-4">
-                    <div class="col-md-4">
-                        <img src="@item.ProductImageUrl" width="300" class="img-thumbnail" />
-                    </div>
-                    <div class="col-md-8">
-                        <h5>@item.ProductName</h5>
-                        <div class="mb-4">@item.ProductDescription</div>
-                        <span>Price: <b>@item.Price.ToString("C")</b></span>
-                        <div class="btn btn-danger sm" @onclick="(()=> DeleteItemFromCartClick(item.Id))">
-                            <i class="fa fa-trash" aria-hidden="true"></i>
+            <div class="col-md-9">
+                @foreach (var item in ShoppingCartItems)
+                {
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <img src="@item.ProductImageUrl" width="300" class="img-thumbnail" />
+                        </div>
+                        <div class="col-md-8">
+                            <h5>@item.ProductName</h5>
+                            <div class="mb-4">@item.ProductDescription</div>
+                            <span>
+                                Price: <b>@item.Price.ToString("C")</b>
+                                <input type="number" @bind="@item.Quantity"/>
+                                <button class="btn btn-info btn-sm" @onclick="(()=>UpdateQuantityClick(item.Id, item.Quantity))">Update quantity</button>
+                            </span>
+
+                            <div class="btn btn-danger sm" @onclick="(()=> DeleteItemFromCartClick(item.Id))">
+                                <i class="fa fa-trash" aria-hidden="true"></i>
+                            </div>
                         </div>
                     </div>
+                }
+            </div>
+            <div class="col-md-3">
+                <h5>Cart Summary</h5>
+                <div class="mt-2">
+                    <div class="mt-2"></div>
+                    <div>Total - </div>
+                    <a href="#" class="btn btn-success">
+                        <span class="oi oi-credit-card"></span>&nbsp; Proceed to Checkout
+                    </a>
                 </div>
-            }
-        </div>
-        <div class="col-md-3">
-            <h5>Cart Summary</h5>
-            <div class="mt-2">
-                <div class="mt-2"></div>
-                <div>Total - </div>
-                <a href="#" class="btn btn-success">
-                    <span class="oi oi-credit-card"></span>&nbsp; Proceed to Checkout
-                </a>
             </div>
         </div>
-    </div>
     }
     else
     {

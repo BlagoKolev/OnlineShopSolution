@@ -128,7 +128,7 @@ namespace OnlineShop.Api.Controllers
                     return NotFound();
                 }
 
-                var product = await productService.GetProductById(itemToUpdate.Id);
+                var product = await productService.GetProductById(itemToUpdate.ProductId);
 
                 if (product == null)
                 {
