@@ -142,9 +142,27 @@ namespace OnlineShop.Api.Services
             return itemtoRemoveDto;
         }
 
-        public Task<CartItem> UpdateQuantity(int id, CartItemUpdateQuantityDto cartItemToAddDto)
+        public async Task<CartItemDto> UpdateQuantity(int id, CartItemUpdateQuantityDto cartItemUpdateQuantityDto)
         {
-            throw new NotImplementedException();
+            var itemToUpdate = db.CartItems
+                 .Where(x => x.Id == id)
+                 .Select(x=> new CartItem
+                 {
+                     Id = x.Id,
+                     ProductId = x.ProductId,
+                     Product = x.Product,
+                     CartId = x.CartId,
+                     Quantity = x.Quantity
+                 })
+                 .FirstOrDefault();
+            if (itemToUpdate != null)
+            {
+                itemToUpdate.Quantity = cartItemUpdateQuantityDto.Quantity;
+                await db.SaveChangesAsync();
+                var itemToReturn = ConvertToDto(itemToUpdate);
+                return itemToReturn;
+            }
+            return null;
         }
 
         private static CartItemDto ConvertToDto(CartItem cartItem)
