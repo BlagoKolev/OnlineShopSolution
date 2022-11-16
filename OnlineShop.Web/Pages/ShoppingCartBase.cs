@@ -19,8 +19,9 @@ namespace OnlineShop.Web.Pages
         {
             try
             {
-                 ShoppingCartItems = await this.ShoppingCartService.GetItems(HardCoded.UserId);
-                CalculateCartSummaryTotals();
+                ShoppingCartItems = await this.ShoppingCartService.GetItems(HardCoded.UserId);
+                CartChanged();
+
             }
             catch (Exception ex)
             {
@@ -28,21 +29,15 @@ namespace OnlineShop.Web.Pages
             }
         }
 
-        protected async Task DeleteItemFromCartClick(int id)     
+        protected async Task DeleteItemFromCartClick(int id)
         {
             var cartItemDto = await this.ShoppingCartService.DeleteItem(id);
             RemoveCartItem(id);
-            CalculateCartSummaryTotals();
+            CartChanged();
         }
         private CartItemDto GetCartItem(int id)
         {
-           return this.ShoppingCartItems.FirstOrDefault(x => x.Id == id);
-        }
-
-        private void RemoveCartItem(int id)
-        {
-            var itemToRemove = GetCartItem(id);
-            ShoppingCartItems.Remove(itemToRemove);
+            return this.ShoppingCartItems.FirstOrDefault(x => x.Id == id);
         }
 
         protected async Task UpdateQuantityClick(int id, int quantity)
@@ -56,17 +51,17 @@ namespace OnlineShop.Web.Pages
                         CartItemId = id,
                         Quantity = quantity
                     };
-                   var returnedUpdateItemDto = await ShoppingCartService.UpdateItemQuantity(updateItemDto);
+                    var returnedUpdateItemDto = await ShoppingCartService.UpdateItemQuantity(updateItemDto);
 
                     UpdateItemTotalPrice(returnedUpdateItemDto);
 
-                    CalculateCartSummaryTotals();
+                    CartChanged();
 
                     ToggleUpdateQuantityButton(returnedUpdateItemDto.Id, false);
                 }
                 else
                 {
-                    var item = this.ShoppingCartItems.FirstOrDefault(x=>x.Id == id);
+                    var item = this.ShoppingCartItems.FirstOrDefault(x => x.Id == id);
 
                     if (item != null)
                     {
@@ -97,7 +92,7 @@ namespace OnlineShop.Web.Pages
         }
         private void SetTotalQuantity()
         {
-            TotalQuantity = this.ShoppingCartItems.Sum(x => x.Quantity);    
+            TotalQuantity = this.ShoppingCartItems.Sum(x => x.Quantity);
         }
         private void CalculateCartSummaryTotals()
         {
@@ -107,10 +102,21 @@ namespace OnlineShop.Web.Pages
         private void UpdateItemTotalPrice(CartItemDto cartItemDto)
         {
             var item = GetCartItem(cartItemDto.Id);
-            if (item!=null)
+            if (item != null)
             {
                 item.TotalPrice = item.Quantity * item.Price;
             }
+        }
+        private void RemoveCartItem(int id)
+        {
+            var itemToRemove = GetCartItem(id);
+            ShoppingCartItems.Remove(itemToRemove);
+        }
+
+        private void CartChanged()
+        {
+            CalculateCartSummaryTotals();
+            ShoppingCartService.RaiseEventOnShoppingCartChanged(TotalQuantity);
         }
     }
 }
